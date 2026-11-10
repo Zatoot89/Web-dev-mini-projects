@@ -1,0 +1,11 @@
+.env
+.env.*
+!.env.example
+node_modules/
+.local-data/
+out/
+public/approved-product.*
+public/worker-audio.wav
+.cache/
+*.mp4
+*.zip

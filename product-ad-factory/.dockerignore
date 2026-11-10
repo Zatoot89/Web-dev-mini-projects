@@ -1,0 +1,11 @@
+node_modules
+.env
+.env.*
+.local-data
+out
+public
+*.mp4
+*.zip
+.git
+.gitignore
+Dockerfile

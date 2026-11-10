@@ -97,7 +97,7 @@ const Intro = () => {
         FEEL THE<br/><span style={{color: C.orange}}>BASS.</span>
       </div>
       <Headphone top={680} width={920} rotate={-6} />
-      <div style={{position: 'absolute', bottom: 355, left: 80, right: 80, textAlign: 'center', color: C.muted, fontSize: 32, fontWeight: 600, letterSpacing: 3}}>NOT JUST SOUND. A SENSATION.</div>
+      <div style={{position: 'absolute', bottom: 260, left: 80, right: 80, textAlign: 'center', color: C.muted, fontSize: 32, fontWeight: 600, letterSpacing: 3}}>NOT JUST SOUND. A SENSATION.</div>
     </Scene>
   );
 };
@@ -108,7 +108,7 @@ const Hero = () => (
     <Label>THE ICONIC WIRELESS EXPERIENCE</Label>
     <div style={{position: 'absolute', top: 370, width: '100%', textAlign: 'center', color: C.cream, fontWeight: 950, fontSize: 118, lineHeight: 1.02}}>CRUSHER<br/><span style={{color: C.orange}}>EVO</span></div>
     <Headphone top={690} width={950} />
-    <div style={{position: 'absolute', bottom: 350, width: '100%', color: '#fff', textAlign: 'center', fontSize: 30, fontWeight: 800, letterSpacing: 4}}>YOUR MUSIC. AMPLIFIED.</div>
+    <div style={{position: 'absolute', bottom: 260, width: '100%', color: '#fff', textAlign: 'center', fontSize: 30, fontWeight: 800, letterSpacing: 4}}>YOUR MUSIC. AMPLIFIED.</div>
   </Scene>
 );
 
@@ -119,7 +119,7 @@ const Bass = () => {
       <Backdrop />
       <Label>MAKE EVERY BEAT YOURS</Label>
       <div style={{position: 'absolute', top: 385, left: 76, right: 76, color: C.cream, fontWeight: 950, fontSize: 95, lineHeight: 1.05, textAlign: 'center'}}>ADJUSTABLE<br/><span style={{color: C.orange}}>SENSORY BASS</span></div>
-      <Headphone type="angle" top={680} width={830} rotate={-5} />
+      <Headphone type="main" top={640} width={890} rotate={-5} />
       <div style={{position: 'absolute', bottom: 340, left: 112, right: 112, height: 26, borderRadius: 20, background: '#393942', boxShadow: '0 0 28px rgba(255,92,39,.4)'}}>
         <div style={{width: `${35 + 51 * Math.sin(f / 35) ** 2}%`, height: '100%', background: `linear-gradient(90deg, #ff902c, ${C.orange})`, borderRadius: 22}} />
         <div style={{position: 'absolute', left: `calc(${35 + 51 * Math.sin(f / 35) ** 2}% - 18px)`, top: -10, width: 44, height: 44, borderRadius: '50%', background: '#fff', boxShadow: '0 0 18px rgba(255,255,255,.7)'}} />

@@ -1,6 +1,8 @@
-# Frameforge — Product Ad Factory (pilot v0.1)
+# Product Ad Factory — Product Ad Factory (pilot v0.1)
 
 **Product URL → preview → customer request → human verification → automated GitHub Actions Remotion video → independent payment confirmation → private download.**
+
+Product Ad Factory is a descriptive working title, not a cleared commercial brand. Confirm trademark and domain availability before launch.
 
 This repository contains a **working operator-assisted commercial MVP**, not a finished SaaS. Rendering is automatic once an operator approves rights/claims and dispatches a job. The CI demonstration uses a fictional product and original illustrations; real ads require rights-cleared images.
 

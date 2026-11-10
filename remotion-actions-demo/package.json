@@ -2,13 +2,17 @@
   "name": "remotion-actions-demo",
   "version": "1.0.0",
   "private": true,
-  "description": "Isolated Remotion render smoke test running in GitHub Actions",
+  "description": "Remotion GitHub Actions smoke render and product ad pipeline",
   "scripts": {
     "dev": "remotion studio src/index.ts",
     "typecheck": "tsc --noEmit",
     "compositions": "remotion compositions src/index.ts",
     "render": "remotion render src/index.ts RemotionSmoke out/remotion-smoke.mp4 --codec=h264 --concurrency=2",
-    "verify": "node scripts/verify-render.mjs out/remotion-smoke.mp4"
+    "verify": "node scripts/verify-render.mjs out/remotion-smoke.mp4",
+    "assets:crusher": "python3 scripts/fetch-crusher-images.py",
+    "audio:crusher": "node scripts/make-beat.mjs",
+    "render:crusher": "remotion render src/index.ts CrusherEvoAd out/crusher-evo-vertical.mp4 --codec=h264 --concurrency=2 --crf=19",
+    "verify:crusher": "node scripts/verify-ad.mjs"
   },
   "dependencies": {
     "@remotion/cli": "4.0.542",

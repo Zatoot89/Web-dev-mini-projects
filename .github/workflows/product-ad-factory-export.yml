@@ -1,0 +1,56 @@
+name: Export Product Ad Factory source bundle
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/product-ad-factory-export.yml"
+      - "product-ad-factory/**"
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            product-ad-factory
+            .github/workflows/product-ad-factory.yml
+          sparse-checkout-cone-mode: false
+      - name: Package standalone deployment source
+        run: |
+          mkdir -p dist/product-ad-factory/.github/workflows
+          cp -R product-ad-factory/. dist/product-ad-factory/
+          cp .github/workflows/product-ad-factory.yml dist/product-ad-factory/.github/workflows/
+          cat > dist/product-ad-factory/MIGRATION-NEXT-STEPS.txt << 'EOF'
+          PRODUCT AD FACTORY — PRIVATE REPOSITORY MIGRATION
+
+          1. Create a new EMPTY PRIVATE repository called Product-Ad-Factory
+             under GitHub account Zatoot89: https://github.com/new
+          2. Extract the product-ad-factory-private-starter.zip archive.
+          3. Upload all extracted contents (including hidden .github, .gitignore and
+             .env.example files) into the private repository's MAIN branch.
+             NOTE: The application remains within the product-ad-factory/ folder
+             so the existing CI workflow works without path changes.
+          4. Confirm the Actions CI test passes on the private repository.
+          5. Configure protected environment product-ad-pilot with worker secrets.
+          6. Deploy the application backend to a host with a PERSISTENT volume and HTTPS.
+          7. Do NOT expose the service publicly or accept payments before security
+             review, privacy terms, verified image rights and an end-to-end demo.
+          8. Follow product-ad-factory/docs/deployment.md for setup details.
+
+          NO LIVE CLIENT DATA OR SECRETS ARE INCLUDED IN THIS PACKAGE.
+          EOF
+          cd dist
+          zip -q -r ../product-ad-factory-private-starter.zip product-ad-factory
+          unzip -t ../product-ad-factory-private-starter.zip | tail -2
+      - name: Upload portable source as a GitHub artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: product-ad-factory-private-starter
+          path: product-ad-factory-private-starter.zip
+          if-no-files-found: error
+          retention-days: 14

@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Product Ad Factory — Operator Console</title><link rel="stylesheet" href="/styles.css"/><script type="module" src="/admin.js"></script></head>
+<body class="admin-page">
+<header class="topbar wrap"><a class="brand" href="/"><span class="brand-mark">P<span>↗</span></span><span><strong>PRODUCT AD FACTORY</strong><small>OPERATOR CONSOLE</small></span></a><a class="nav-cta" href="/">← Back to store</a></header>
+<main class="wrap admin-layout"><div class="section-kicker">RESTRICTED / OPERATOR</div>
+<h1>Order <em>control center.</em></h1>
+<p class="section-lead">Verify marketing claims, review rights evidence and product images, then trigger automated video rendering. Do not release videos until payment is confirmed outside this pilot.</p>
+<div class="admin-auth"><label for="admin-key">Admin key</label><input id="admin-key" type="password" autocomplete="off" placeholder="Enter private operator key"/>
+<button id="load-orders" class="btn primary">Load orders ↗</button><p class="fineprint">Stored in this tab's memory only. Requires the private ADMIN_KEY set on the server.</p></div>
+<div id="admin-notice" role="status" aria-live="polite"></div>
+<div id="orders-list"></div>
+<div id="order-editor" class="editor" hidden>
+  <h2>Review selected order</h2>
+  <div id="selected-info" class="data-panel"></div>
+  <label for="approved-title">Verified product title</label><input id="approved-title" maxlength="160"/>
+  <label for="approved-image">Approved product image URL (leave empty if owner uploaded a file)</label><input id="approved-image" type="url"/>
+  <label for="approved-claims">Verified product claims — one per line, maximum 3</label><textarea id="approved-claims" rows="4"></textarea>
+  <label for="review-evidence">Rights evidence and operator review notes</label><textarea id="review-evidence" rows="3"></textarea>
+  <label class="checkline"><input id="claim-check" type="checkbox"/> I have verified every advertised claim.</label>
+  <label class="checkline"><input id="rights-check" type="checkbox"/> I have reviewed the use rights for the supplied media and brand.</label>
+  <div class="admin-buttons"><button id="approve-order" class="btn primary">Approve creative</button><button id="dispatch-order" class="btn outline">Render with GitHub Actions</button></div>
+  <div class="admin-delivery"><label for="payment-ref">Verified payment reference (only after render succeeds)</label><input id="payment-ref" placeholder="Invoice number or verified payment reference"/><button id="deliver-order" class="btn outline">Release finished video</button></div>
+</div>
+</main></body></html>

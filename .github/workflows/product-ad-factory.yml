@@ -1,0 +1,120 @@
+name: Product Ad Factory CI and video renderer
+
+on:
+  pull_request:
+    paths:
+      - "product-ad-factory/**"
+      - ".github/workflows/product-ad-factory.yml"
+  workflow_dispatch:
+    inputs:
+      order_id:
+        description: "UUID of previously approved customer order"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: product-ad-factory
+    steps:
+      - name: Checkout isolated application
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            product-ad-factory
+          sparse-checkout-cone-mode: true
+      - name: Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install media and browser prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            ffmpeg fonts-noto-core fonts-noto-extra \
+            libnss3 libdbus-1-3 libatk1.0-0 libgbm-dev \
+            libasound2t64 libxrandr2 libxkbcommon-dev libxfixes3 \
+            libxcomposite1 libxdamage1 libatk-bridge2.0-0 \
+            libpango-1.0-0 libcairo2 libcups2
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+      - name: Server and package syntax checks
+        run: npm run lint
+      - name: Business, URL safety and API tests
+        run: npm test
+      - name: Install Remotion headless browser
+        run: npx remotion browser ensure
+      - name: Render fictional product video with original score
+        run: npm run render:demo
+      - name: Validate 1080x1920 H.264, AAC, duration
+        run: npm run verify:demo
+      - name: Upload public fictional sample and QA report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: product-ad-factory-demo
+          path: |
+            product-ad-factory/out/demo.mp4
+            product-ad-factory/out/video-qa.json
+          if-no-files-found: warn
+          retention-days: 7
+
+  approved-order:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    environment: product-ad-pilot
+    env:
+      ORDER_ID: ${{ inputs.order_id }}
+      FACTORY_PUBLIC_URL: ${{ secrets.FACTORY_PUBLIC_URL }}
+      WORKER_KEY: ${{ secrets.FACTORY_WORKER_KEY }}
+    defaults:
+      run:
+        working-directory: product-ad-factory
+    steps:
+      - name: Checkout approved rendering code
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            product-ad-factory
+          sparse-checkout-cone-mode: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install media and Chromium prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            ffmpeg fonts-noto-core fonts-noto-extra \
+            libnss3 libdbus-1-3 libatk1.0-0 libgbm-dev \
+            libasound2t64 libxrandr2 libxkbcommon-dev libxfixes3 \
+            libxcomposite1 libxdamage1 libatk-bridge2.0-0 \
+            libpango-1.0-0 libcairo2 libcups2
+      - name: Install production dependencies
+        run: npm install --no-audit --no-fund
+      - name: Download approved brief and rights-cleared media
+        run: npm run worker:prepare
+      - name: Install Remotion browser
+        run: npx remotion browser ensure
+      - name: Render customer-specific advertisement
+        run: npm run render:job
+      - name: Verify MP4 technical acceptance
+        run: npm run verify:job
+      - name: Deliver video to authenticated backend
+        run: node scripts/upload-worker.mjs
+      - name: Report rendering failure for operator recovery
+        if: failure()
+        run: |
+          node -e '
+          const base=process.env.FACTORY_PUBLIC_URL, id=process.env.ORDER_ID,token=process.env.WORKER_KEY;
+          if(base&&base.startsWith("https://")&&id&&token) fetch(base.replace(/\/+$/,"")+"/api/worker/orders/"+id+"/fail",
+            {method:"POST",headers:{Authorization:"Bearer "+token,"Content-Type":"application/json"},body:"{}"})
+            .then(r=>console.log("Failure callback status",r.status)).catch(e=>console.error("Callback unavailable",e.message));
+          '

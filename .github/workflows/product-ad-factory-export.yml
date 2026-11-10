@@ -22,10 +22,10 @@ jobs:
           sparse-checkout-cone-mode: false
       - name: Package standalone deployment source
         run: |
-          mkdir -p dist/product-ad-factory/.github/workflows
+          mkdir -p dist/product-ad-factory dist/.github/workflows
           cp -R product-ad-factory/. dist/product-ad-factory/
-          cp .github/workflows/product-ad-factory.yml dist/product-ad-factory/.github/workflows/
-          cat > dist/product-ad-factory/MIGRATION-NEXT-STEPS.txt << 'EOF'
+          cp .github/workflows/product-ad-factory.yml dist/.github/workflows/
+          cat > dist/MIGRATION-NEXT-STEPS.txt << 'EOF'
           PRODUCT AD FACTORY — PRIVATE REPOSITORY MIGRATION
 
           1. Create a new EMPTY PRIVATE repository called Product-Ad-Factory
@@ -45,7 +45,7 @@ jobs:
           NO LIVE CLIENT DATA OR SECRETS ARE INCLUDED IN THIS PACKAGE.
           EOF
           cd dist
-          zip -q -r ../product-ad-factory-private-starter.zip product-ad-factory
+          zip -q -r ../product-ad-factory-private-starter.zip product-ad-factory .github MIGRATION-NEXT-STEPS.txt
           unzip -t ../product-ad-factory-private-starter.zip | tail -2
       - name: Upload portable source as a GitHub artifact
         uses: actions/upload-artifact@v4

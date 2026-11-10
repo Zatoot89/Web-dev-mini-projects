@@ -61,7 +61,7 @@ export async function buildApp(options={}) {
   await app.register(rateLimit,{global:false});
   await app.register(staticPlugin,{root:join(root,'website'),prefix:'/'});
   app.addContentTypeParser(['image/png','image/jpeg','image/webp','application/octet-stream'],
-    {parseAs:'buffer',bodyLimit:7_000_000},(req,body,done)=>done(null,body));
+    {parseAs:'buffer',bodyLimit:100_000_000},(req,body,done)=>done(null,body));
   app.addHook('onSend',async(req,reply,payload)=>{
     reply.header('X-Content-Type-Options','nosniff').header('X-Frame-Options','DENY')
       .header('Referrer-Policy','no-referrer').header('Permissions-Policy','camera=(), microphone=(), geolocation=()');
@@ -99,6 +99,7 @@ export async function buildApp(options={}) {
       validatePublicUrl(input.productUrl,config.merchantAllowlist);
       if (input.imageUrl) validatePublicUrl(input.imageUrl,config.assetAllowlist);
     } catch(error) {return fail(reply,422,error.message);}
+    if (input.packageKey !== 'single' || input.extraLanguage) return fail(reply,422,'Online intake currently supports Single Ad only. For managed packages contact the operator.');
     const price=quote(input.packageKey,input.extraLanguage);
     const {order,trackingToken}=store.create(input,price);
     return reply.code(201).send({orderId:order.id,trackingToken,status:order.status,

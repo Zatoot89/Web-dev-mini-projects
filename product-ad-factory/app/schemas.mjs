@@ -18,7 +18,7 @@ export const publicOrderSchema=z.object({
 export const approvalSchema=z.object({
   title:z.string().trim().min(4).max(160),
   claims:z.array(z.string().trim().min(3).max(100)).min(1).max(3),
-  imageUrl:z.url().max(1600),
+  imageUrl:z.union([z.url().max(1600),z.literal('')]).default(''),
   rightsNote:z.string().trim().min(12).max(500),
   claimsChecked:z.literal(true),
   rightsChecked:z.literal(true),

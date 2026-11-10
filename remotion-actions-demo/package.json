@@ -2,7 +2,7 @@
   "name": "remotion-actions-demo",
   "version": "1.0.0",
   "private": true,
-  "description": "Remotion GitHub Actions smoke render and product ad pipeline",
+  "description": "Remotion GitHub Actions video rendering demos",
   "scripts": {
     "dev": "remotion studio src/index.ts",
     "typecheck": "tsc --noEmit",
@@ -12,7 +12,11 @@
     "assets:crusher": "python3 scripts/fetch-crusher-images.py",
     "audio:crusher": "node scripts/make-beat.mjs",
     "render:crusher": "remotion render src/index.ts CrusherEvoAd out/crusher-evo-vertical.mp4 --codec=h264 --concurrency=2 --crf=19",
-    "verify:crusher": "node scripts/verify-ad.mjs"
+    "verify:crusher": "node scripts/verify-ad.mjs",
+    "assets:pps": "python3 scripts/fetch-pps-images.py",
+    "audio:pps": "node scripts/make-pps-music.mjs",
+    "render:pps": "remotion render src/index.ts PpsDubaiAd out/pps-dubai-promo.mp4 --codec=h264 --concurrency=2 --crf=19",
+    "verify:pps": "node scripts/verify-pps.mjs"
   },
   "dependencies": {
     "@remotion/cli": "4.0.542",

@@ -1,0 +1,68 @@
+name: PPS Dubai promotional video
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/pps-dubai-promo.yml"
+      - "remotion-actions-demo/src/PpsDubaiAd.tsx"
+      - "remotion-actions-demo/src/Root.tsx"
+      - "remotion-actions-demo/scripts/fetch-pps-images.py"
+      - "remotion-actions-demo/scripts/make-pps-music.mjs"
+      - "remotion-actions-demo/scripts/verify-pps.mjs"
+      - "remotion-actions-demo/package.json"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  render:
+    name: Render and verify PPS Dubai promo
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    defaults:
+      run:
+        working-directory: remotion-actions-demo
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            remotion-actions-demo
+          sparse-checkout-cone-mode: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install browser and media dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ffmpeg \
+            libnss3 libdbus-1-3 libatk1.0-0 libgbm-dev \
+            libasound2t64 libxrandr2 libxkbcommon-dev libxfixes3 \
+            libxcomposite1 libxdamage1 libatk-bridge2.0-0 \
+            libpango-1.0-0 libcairo2 libcups2
+          python3 -m pip install --break-system-packages 'Pillow>=10,<13'
+      - name: Install project packages
+        run: npm install --no-audit --no-fund
+      - name: Download actual school campus photography
+        run: npm run assets:pps
+      - name: Create original instrumental score
+        run: npm run audio:pps
+      - name: Typecheck composition
+        run: npm run typecheck
+      - name: Prepare Chrome Headless Shell
+        run: npx remotion browser ensure
+      - name: Render PPS Dubai 20-second vertical video
+        run: npm run render:pps
+      - name: Validate output and audio
+        run: npm run verify:pps
+      - name: Upload MP4 and QA evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pps-dubai-promo-video
+          path: |
+            remotion-actions-demo/out/pps-dubai-promo.mp4
+            remotion-actions-demo/out/pps-verification.json
+            remotion-actions-demo/out/pps-photo-sources.json
+          if-no-files-found: warn
+          retention-days: 7
